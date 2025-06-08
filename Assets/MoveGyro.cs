@@ -1,0 +1,65 @@
+using System.Threading.Tasks;
+using NUnit.Framework;
+using Unity.Mathematics;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public class MoveGyro : MonoBehaviour
+{
+    private Rigidbody rb;
+    public InputSystem_Actions inputActions;
+    private InputAction move;
+    private Vector2 moveDirection;
+    private Vector2 inputDirection;
+    private Vector2 gyroDirection;
+    private bool useKeyboard;
+    public float moveSpeed = 8f;
+
+    private void Awake()
+    {
+        inputActions = new InputSystem_Actions();
+        rb = GetComponent<Rigidbody>();
+        rb.linearVelocity = new Vector3(0f, 0f, 0f);
+        rb.constraints = RigidbodyConstraints.FreezePositionY;
+        Input.gyro.enabled = false;
+        useKeyboard = false;
+    }
+
+    private void OnEnable()
+    {
+        move = inputActions.Player.Move;
+        move.Enable();
+    }
+
+    private void OnDisable()
+    {
+        move.Disable();
+    }
+
+    void Update()
+    {
+        if (!useKeyboard)
+        {
+            useKeyboard = move.ReadValue<Vector2>().SqrMagnitude() > 0f;
+        }
+        inputDirection = move.ReadValue<Vector2>();
+        // TODO: make gyroDirection correct when testing with gyro
+        gyroDirection = DeviceGyro.GetAttitude() * Vector3.forward;
+        // add Dead Zone
+        gyroDirection = gyroDirection.SqrMagnitude() > 1f ? gyroDirection : Vector2.zero;
+
+        moveDirection = useKeyboard ? inputDirection : gyroDirection;
+        // print(rb.linearVelocity);
+        // Vector3 deviceAcceleration = DeviceGyro.GetLinAccel();
+        // Vector3 unityAcceleration = new Vector3(deviceAcceleration.x, 0f, deviceAcceleration.y);
+        // rb.linearVelocity *= 0.95f;
+        // rb.linearVelocity += unityAcceleration * Time.deltaTime * -100f;
+        // transform.rotation = DeviceGyro.GetAttitude();
+    }
+
+    void FixedUpdate()
+    {
+        rb.AddForce(new Vector3(moveDirection.x * moveSpeed, 0f, moveDirection.y * moveSpeed), ForceMode.Acceleration);
+        // transform.position += new Vector3(moveDirection.x, 0, moveDirection.y);
+    }
+}

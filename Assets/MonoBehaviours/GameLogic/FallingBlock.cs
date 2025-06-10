@@ -1,9 +1,10 @@
 using System;
 using Cinemachine.Utility;
 using Unity.Mathematics;
-using UnityEditor.Callbacks;
 using UnityEngine;
 using UnityEngine.Animations;
+using UnityEngine.EventSystems;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class FallingBlock : MonoBehaviour
 {
@@ -30,7 +31,7 @@ public class FallingBlock : MonoBehaviour
         {
             FollowParent();
         }
-        
+
         if (rb.position.y < -2)
         {
             OnOutOfBounds();
@@ -71,6 +72,8 @@ public class FallingBlock : MonoBehaviour
             rb.useGravity = false;
             // rb.constraints = RigidbodyConstraints.FreezePositionY;
             rb.angularDamping = 50f;
+            GameManager.Instance.StackTop = rb;
+            Score(collision.rigidbody.position);
         }
         // collider.enabled = false;
         // collision.rigidbody.linearVelocity = Vector3.zero;
@@ -78,5 +81,13 @@ public class FallingBlock : MonoBehaviour
         gameObject.layer = LayerMask.NameToLayer("Stack");
         // Debug.Log("Saw collision. Gravity is: " + (rb.useGravity ? "on" : "off"));
         // Debug.Log(rb.useGravity);
+    }
+
+    private void Score(Vector3 collidedPosition)
+    {
+        print($"Block: {rb.position}, Collided: {collidedPosition}, " +
+            $"Dot Product: {Vector3.Distance(rb.position, collidedPosition)}, Scale: {transform.localScale}, " +
+            $"Score: {(1 + (int)(transform.localScale.x / Vector3.Distance(rb.position, collidedPosition)))}");
+        GameManager.Instance.Score += (1 + (int)(transform.localScale.x / Vector3.Distance(rb.position, collidedPosition) ));
     }
 }

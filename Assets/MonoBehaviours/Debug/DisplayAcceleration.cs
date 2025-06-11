@@ -4,18 +4,22 @@ using System;
 
 public class DisplayAcceleration : MonoBehaviour
 {
+    TextMeshPro text;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         Input.gyro.enabled = true;
+        text = GetComponent<TextMeshPro>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 deviceAcceleration = DeviceGyro.GetLinAccel();
+        Quaternion deviceAcceleration = DeviceGyro.GetAttitude();
 
-        print(deviceAcceleration);
+        // text.text = deviceAcceleration.ToString();
+        // text.text = (deviceAcceleration * Vector3.forward).ToString();
+        text.text = (deviceAcceleration * Vector2.up).ToString();
         // this.SetText(new String(deviceAcceleration));
     }
 }

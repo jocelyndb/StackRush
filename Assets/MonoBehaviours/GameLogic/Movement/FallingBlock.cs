@@ -1,65 +1,58 @@
 using System;
 using Cinemachine.Utility;
+using NUnit.Framework.Constraints;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.EventSystems;
 using UnityEngine.SocialPlatforms.Impl;
 
-public class FallingBlock : MonoBehaviour
+public class FallingBlock : Falling
 {
-    public float springFactor = 8f;
-    public float maxVelocity = 5f;
+    public float angleSpringFactor = 1.5f;
+    // public float maxVelocity = 5000f;
     // public float dampFactor = 0.9999f;
-    private Rigidbody rb;
     // private Collider collider;
     private Rigidbody parentRB;
     private Vector3 parentDirection = Vector3.zero;
     private Quaternion targetAngle;
 
-    private void Awake()
+    private new void Awake()
     {
-        rb = GetComponent<Rigidbody>();
-        // collider = GetComponent<Collider>();
+        base.Awake();
         targetAngle = new Quaternion();
         targetAngle.SetLookRotation(rb.transform.forward, rb.transform.up);
     }
 
-    private void FixedUpdate()
+    private new void FixedUpdate()
     {
+        base.FixedUpdate();
+
         if (parentRB)
         {
             FollowParent();
-        }
-
-        if (rb.position.y < -2)
-        {
-            OnOutOfBounds();
         }
     }
 
     private void FollowParent()
     {
-        parentDirection = (parentRB.position - rb.position + new Vector3(0f, parentRB.transform.localScale.y, 0f)) * springFactor;
+        parentDirection = (parentRB.position - rb.position + new Vector3(0f, parentRB.transform.localScale.y, 0f));
         RightAngle();
-        rb.linearVelocity = new Vector3(Mathf.Min(parentDirection.x, maxVelocity), Mathf.Min(parentDirection.y, maxVelocity), Mathf.Min(parentDirection.z, maxVelocity));
+        // rb.linearVelocity = new Vector3(Mathf.Min(parentDirection.x, maxVelocity), Mathf.Min(parentDirection.y, maxVelocity), Mathf.Min(parentDirection.z, maxVelocity));
+        rb.linearVelocity = new Vector3(parentDirection.x, parentDirection.y, parentDirection.z) * GameManager.Instance.springFactor;
     }
 
     private void RightAngle()
     {
-        rb.rotation = Quaternion.RotateTowards(rb.rotation, targetAngle, 0.5f);
-    }
-
-    private void OnOutOfBounds()
-    {
-        Destroy(gameObject);
+        rb.rotation = Quaternion.RotateTowards(rb.rotation, targetAngle, angleSpringFactor);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
+        // Debug.Log(collision.collider.bounds.max)
         if (collision.rigidbody.position.y >= rb.position.y - 0.4f
-            || Math.Abs(rb.position.x - collision.rigidbody.position.x) > transform.localScale.x / 1.5
-            || Math.Abs(rb.position.z - collision.rigidbody.position.z) > transform.localScale.z / 1.5)
+            || Math.Abs(rb.position.x - collision.rigidbody.position.x) > 2 * collision.collider.bounds.extents.x / 1.5
+            || Math.Abs(rb.position.z - collision.rigidbody.position.z) > 2 * collision.collider.bounds.extents.z / 1.5)
         {
             return;
         }
@@ -72,7 +65,8 @@ public class FallingBlock : MonoBehaviour
             rb.useGravity = false;
             // rb.constraints = RigidbodyConstraints.FreezePositionY;
             rb.angularDamping = 50f;
-            GameManager.Instance.StackTop = rb;
+            GameManager.Instance.StackTopRB = rb;
+            GameManager.Instance.StackTopCollider = GetComponent<BoxCollider>();
             Score(collision.rigidbody.position);
         }
         // collider.enabled = false;
@@ -85,9 +79,9 @@ public class FallingBlock : MonoBehaviour
 
     private void Score(Vector3 collidedPosition)
     {
-        print($"Block: {rb.position}, Collided: {collidedPosition}, " +
-            $"Dot Product: {Vector3.Distance(rb.position, collidedPosition)}, Scale: {transform.localScale}, " +
-            $"Score: {(1 + (int)(transform.localScale.x / Vector3.Distance(rb.position, collidedPosition)))}");
-        GameManager.Instance.Score += (1 + (int)(transform.localScale.x / Vector3.Distance(rb.position, collidedPosition) ));
+        // Debug.Log($"Block: {rb.position}, Collided: {collidedPosition}, " +
+            // $"Dot Product: {Vector3.Distance(rb.position, collidedPosition)}, Scale: {transform.localScale}, " +
+            // $"Score: {GameManager.Instance.Level * (1 + (int)(transform.localScale.x / Vector3.Distance(rb.position, collidedPosition)))}");
+        GameManager.Instance.Score += GameManager.Instance.Level * (1 + (int)(transform.localScale.x / Vector3.Distance(rb.position, collidedPosition) ));
     }
 }

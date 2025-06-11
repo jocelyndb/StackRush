@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Security.Cryptography;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
 using UnityEngine;
@@ -31,31 +33,64 @@ public class GameManager : MonoBehaviour
     public int BlocksPerLevel = 10;
     public int LevelCount = 1;
     public int LevelBonus = 100;
-    public double LevelSizeModifier = 0.8;
+    public double LevelSizeModifier = 0.9;
+    public float minLevelSize = 0.45f;
     public float InitialBlockSize = 5f;
+    public float baseSpringFactor = 18f;
+    public float springFactor = 18f;
+    public float baseMoveSpeed = 50f;
+    public float moveSpeed = 50f;
+    public List<Powerup> powerups = new List<Powerup>();
 
     public Vector3 BlockSize
     {
         get
         {
-            return new Vector3(InitialBlockSize * (float)Math.Pow(LevelSizeModifier, Level - 1), 1f, InitialBlockSize * (float)Math.Pow(LevelSizeModifier, Level - 1));
+            return new Vector3(InitialBlockSize * Math.Max(minLevelSize, (float)Math.Pow(LevelSizeModifier, Level - 1)), 1f, InitialBlockSize * Math.Max(minLevelSize, (float)Math.Pow(LevelSizeModifier, Level - 1)));
         }
     }
 
-    private Rigidbody _stackTop;
-    public Rigidbody StackTop
+    private Rigidbody _stackTopRB;
+    public Rigidbody StackTopRB
     {
         get
         {
-            if (!_stackTop)
+            if (!_stackTopRB)
             {
-                _stackTop = GameObject.Find("StackBottom").GetComponent<Rigidbody>();
+                _stackTopRB = GameObject.Find("StackBottom").GetComponent<Rigidbody>();
             }
-            return _stackTop;
+            return _stackTopRB;
         }
         set
         {
-            _stackTop = value;
+            _stackTopRB = value;
+        }
+    }
+    private BoxCollider _stackTopCollider;
+    public BoxCollider StackTopCollider
+    {
+        get
+        {
+            if (!_stackTopCollider)
+            {
+                _stackTopCollider = GameObject.Find("StackBottom").GetComponent<BoxCollider>();
+            }
+            return _stackTopCollider;
+        }
+        set
+        {
+            // handle changing top of stack with powerups
+            foreach (Powerup powerup in powerups)
+            {
+                print("Deactivating powerups while switching stack top");
+                powerup.DeactivatePowerup();
+            }
+            _stackTopCollider = value;
+            foreach (Powerup powerup in powerups)
+            {
+                print("Reactivating powerups after switching stack top");
+                powerup.ActivatePowerup();
+            }
         }
     }
 
@@ -76,13 +111,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public static void Start()
+    public static void Awake()
     {
-        Instance.Score = 0;
     }
 
     public static void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            AdvanceLevel();
+        }
         // Debug.Log(Instance.Score);
     }
 
@@ -98,7 +136,7 @@ public class GameManager : MonoBehaviour
         {
             if (obj.layer == LayerMask.NameToLayer("Stack") || obj.layer == LayerMask.NameToLayer("Falling"))
             {
-                if (obj.name != "StackBottom")
+                if (obj.tag == "FallingBlock")
                 {
                     Destroy(obj);
                 }

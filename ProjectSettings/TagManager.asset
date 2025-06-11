@@ -6,6 +6,7 @@ TagManager:
   tags:
   - CinemachineTarget
   - PhysicsExclude
+  - FallingBlock
   layers:
   - Default
   - TransparentFX

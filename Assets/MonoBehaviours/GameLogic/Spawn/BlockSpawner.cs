@@ -5,7 +5,7 @@ public class BlockSpawner : MonoBehaviour
     public GameObject Prefab;
     public float xBound = 5;
     public float zBound = 5;
-    public float yInitial = 20f;
+    public float yInitial = 40f;
     public float yIncrease = 1f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

@@ -13,7 +13,6 @@ public class MoveGyro : MonoBehaviour
     private Vector2 inputDirection;
     private Vector2 gyroDirection;
     private bool useKeyboard;
-    public float moveSpeed = 8f;
 
     private void Awake()
     {
@@ -38,11 +37,16 @@ public class MoveGyro : MonoBehaviour
 
     void Update()
     {
-        if (!useKeyboard)
-        {
-            useKeyboard = move.ReadValue<Vector2>().SqrMagnitude() > 0f;
-        }
+        // if (!useKeyboard)
+        //     {
+        //         useKeyboard = move.ReadValue<Vector2>().SqrMagnitude() > 0f;
+        //     }
         inputDirection = move.ReadValue<Vector2>();
+        if (inputDirection.magnitude > 0f)
+        {
+            useKeyboard = true;
+        }
+        // Debug.Log($"Using keyboard? {(useKeyboard ? "Yes" : "No")}");
         // TODO: make gyroDirection correct when testing with gyro
         gyroDirection = DeviceGyro.GetAttitude() * Vector3.forward;
         // add Dead Zone
@@ -59,7 +63,7 @@ public class MoveGyro : MonoBehaviour
 
     void FixedUpdate()
     {
-        rb.AddForce(new Vector3(moveDirection.x * moveSpeed, 0f, moveDirection.y * moveSpeed), ForceMode.Acceleration);
+        rb.AddForce(new Vector3(moveDirection.x * GameManager.Instance.moveSpeed, 0f, moveDirection.y * GameManager.Instance.moveSpeed), ForceMode.Acceleration);
         // transform.position += new Vector3(moveDirection.x, 0, moveDirection.y);
     }
 }

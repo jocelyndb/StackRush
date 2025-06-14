@@ -7,7 +7,7 @@ public class SpringPowerup : Powerup
 {
     new void Start()
     {
-        name = "Spring";
+        name = "Cheese Pull";
         time = 10f;
         ActivatePowerup = () =>
         {

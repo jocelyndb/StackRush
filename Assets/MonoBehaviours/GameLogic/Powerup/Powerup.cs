@@ -28,12 +28,18 @@ public class Powerup : Falling
         };
     }
 
+    private new void Awake()
+    {
+        base.Awake();
+        rb.angularVelocity = new Vector3(0f, UnityEngine.Random.Range(2f, 3.5f) * (float)Math.Pow(-1, UnityEngine.Random.Range(0,2)), 0f);
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         rb.detectCollisions = false;
         rb.constraints = RigidbodyConstraints.FreezeAll;
         GetComponent<MeshRenderer>().enabled = false;
-
+        transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
         Debug.Log($"Now there are {GameManager.Instance.powerups.Count()} powerups in the GameManager");
         Debug.Log("Starting powerup flow");
         StartCoroutine(PowerupFlow());

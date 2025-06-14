@@ -15,7 +15,11 @@ public class MoveGyro : MonoBehaviour
     private Vector2 initialGyro;
     private Vector2 inputDirection;
     private Vector2 gyroDirection;
+    private Quaternion targetAngle;
     private bool useKeyboard;
+
+    public float angleSpringFactor = 15f;
+    public Vector2 boundary = new Vector2(5f, 5f);
 
     private void Awake()
     {
@@ -25,6 +29,7 @@ public class MoveGyro : MonoBehaviour
         rb.constraints = RigidbodyConstraints.FreezePositionY;
         Input.gyro.enabled = false;
         useKeyboard = false;
+        targetAngle = new Quaternion();
     }
 
     private void OnEnable()
@@ -69,13 +74,20 @@ public class MoveGyro : MonoBehaviour
     {
         rb.AddForce(new Vector3(moveDirection.x * GameManager.Instance.moveSpeed, 0f, moveDirection.y * GameManager.Instance.moveSpeed), ForceMode.Acceleration);
         // transform.position += new Vector3(moveDirection.x, 0, moveDirection.y);
+
+        if (Math.Abs(rb.transform.position.x) >= boundary.x || Math.Abs(rb.transform.position.z) >= boundary.y)
+        {
+            rb.linearVelocity *= -1.5f;
+        }
+        targetAngle.SetLookRotation(new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z), Vector3.up);
+        rb.rotation = Quaternion.RotateTowards(rb.rotation, targetAngle, angleSpringFactor);
+        // rb.rotation.SetLookRotation(rb.linearVelocity.normalized, Vector3.up);
     }
 
     private Vector2 ClampedGyroDirection(Quaternion input)
     {
         Vector3 gyroVector = input * Vector2.up;
-        Debug.Log(new Vector2(gyroVector.z * 5f, (gyroVector.y - .725f) * -4.5f));
+        // Debug.Log(new Vector2(gyroVector.z * 5f, (gyroVector.y - .725f) * -4.5f));
         return new Vector2(Math.Clamp(gyroVector.z * 5f, -1f, 1f), Math.Clamp((gyroVector.y - .725f) * -4.5f, -1f, 1f));
-        // return DeviceGyro.GetAttitude() * Vector3.forward;
     }
 }

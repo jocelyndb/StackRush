@@ -8,7 +8,7 @@ public class MagnetPowerup : Powerup
     new void Start()
     {
         name = "Magnet";
-        time = 5f;
+        time = 7f;
         ActivatePowerup = () =>
         {
             // GameManager.Instance.springFactor = 15f;

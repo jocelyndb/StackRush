@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Linq;
 using System.Security.Cryptography;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
@@ -41,6 +43,33 @@ public class GameManager : MonoBehaviour
     public float baseMoveSpeed = 50f;
     public float moveSpeed = 50f;
     public List<Powerup> powerups = new List<Powerup>();
+    // public List<Powerup> powerupDeleteQueue = new List<Powerup>();
+    private static string[] levelNames =
+    {
+        "Grease Goblin",
+        "Deep Disher",
+        "Pizza Rat",
+        "Dollar Slicer",
+        "Frozen Pizza Enjoyer",
+        "Pineapple Hater",
+        "Pizza Bagel Fan",
+        "Slice Stealer",
+        "Delivery Boy",
+        "One Biter",
+        "The Noid",
+        "Ninja Turtle",
+        "Pizza Man",
+        "Pie Slinger",
+        "Napolitano",
+        "Wood Firer",
+        "Pizzaiolo",
+        "Sauce Boss",
+        "Parm Daddy",
+        "Dr Oetker",
+        "Lord of the Pies",
+        "Pizza God",
+        "Nonna",
+    };
 
     public Vector3 BlockSize
     {
@@ -124,6 +153,51 @@ public class GameManager : MonoBehaviour
         // Debug.Log(Instance.Score);
     }
 
+    // public static void FixedUpdate()
+    // {
+    //     if (Instance.powerupDeleteQueue.Count > 0)
+    //     {
+    //         foreach (Powerup powerup in Instance.powerupDeleteQueue)
+    //         {
+    //             powerup.DeactivatePowerup();
+    //             Instance.powerups.Remove(powerup);
+    //             GameObject.Destroy(powerup.gameObject);
+    //         }
+    //         Instance.powerupDeleteQueue.Clear();
+    //         foreach (Powerup powerup in Instance.powerups)
+    //         {
+    //             powerup.ActivatePowerup();
+    //         }
+    //     }
+    // }
+
+    public static void DeletePowerUp(Powerup powerup)
+    {
+        Instance.powerups.Remove(powerup);
+        ReactivatePowerUps();
+    }
+
+    public static void ReactivatePowerUps()
+    {
+        foreach (Powerup pwr in Instance.powerups)
+        {
+            pwr.ActivatePowerup();
+        }
+    }
+
+    public static void TogglePause()
+    {
+        if (Time.timeScale == 0f)
+        {
+            Time.timeScale = 1f;
+            ReactivatePowerUps();
+        }
+        else
+        {
+            Time.timeScale = 0;
+        }
+    }
+
     public static void AdvanceLevel()
     {
         // Update level, reset score and block counter
@@ -136,16 +210,31 @@ public class GameManager : MonoBehaviour
         {
             if (obj.layer == LayerMask.NameToLayer("Stack") || obj.layer == LayerMask.NameToLayer("Falling"))
             {
-                if (obj.tag == "FallingBlock")
+                // if (obj.tag == "FallingBlock")
+                // {
+                //     Destroy(obj);
+                // }
+                if (obj.tag == "Powerup")
                 {
-                    Destroy(obj);
+                    continue;
+                }
+                if (obj.tag == "StackBottom")
+                {
+                    obj.GetComponent<Rigidbody>().detectCollisions = true;
                 }
                 else
                 {
-                    obj.GetComponent<Rigidbody>().detectCollisions = true;
+                    Destroy(obj);
                 }
 
             }
         }
+    }
+
+    public static string GetLevelName()
+    {
+        if (Instance.Level > levelNames.Length)
+            return levelNames.Last() + " x " + (Instance.Level - levelNames.Length + 1);
+        return levelNames[Instance.Level - 1];
     }
 }

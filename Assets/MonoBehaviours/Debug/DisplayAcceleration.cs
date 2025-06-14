@@ -18,8 +18,8 @@ public class DisplayAcceleration : MonoBehaviour
         Quaternion deviceAcceleration = DeviceGyro.GetAttitude();
 
         // text.text = deviceAcceleration.ToString();
-        // text.text = (deviceAcceleration * Vector3.forward).ToString();
-        text.text = (deviceAcceleration * Vector2.up).ToString();
+        text.text = (deviceAcceleration * Vector3.forward).ToString();
+        // text.text = (deviceAcceleration * Vector2.up).ToString();
         // this.SetText(new String(deviceAcceleration));
     }
 }

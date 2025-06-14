@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 7033815400338432005}
   m_Layer: 7
   m_Name: SpeedPowerupSphere
-  m_TagString: Untagged
+  m_TagString: Powerup
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -149,3 +149,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ce8100ec38c04e33a9a7dbb8b0b7df4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Name: Powerup

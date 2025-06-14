@@ -49,7 +49,8 @@ public class Powerup : Falling
         yield return new WaitForSeconds(time);
         DeactivatePowerup();
         Debug.Log("Deactivated powerup");
-        GameManager.Instance.powerups.Remove(this);
+        GameManager.DeletePowerUp(this);
+        // GameManager.Instance.powerups.Remove(this);
         Destroy(gameObject);
     }
 }

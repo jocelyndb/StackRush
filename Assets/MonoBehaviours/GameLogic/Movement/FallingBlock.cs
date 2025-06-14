@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using Cinemachine.Utility;
 using NUnit.Framework.Constraints;
 using Unity.Mathematics;
@@ -9,19 +10,23 @@ using UnityEngine.SocialPlatforms.Impl;
 
 public class FallingBlock : Falling
 {
-    public float angleSpringFactor = 1.5f;
+    public float angleSpringFactor = 4f;
     // public float maxVelocity = 5000f;
     // public float dampFactor = 0.9999f;
     // private Collider collider;
     private Rigidbody parentRB;
     private Vector3 parentDirection = Vector3.zero;
     private Quaternion targetAngle;
+    // private Transform shadow;
 
     private new void Awake()
     {
+        
         base.Awake();
         targetAngle = new Quaternion();
-        targetAngle.SetLookRotation(rb.transform.forward, rb.transform.up);
+        // targetAngle.SetLookRotation(new Vector3(rb.transform.forward.x, 0f, rb.transform.forward.z), Vector3.up);
+        rb.angularVelocity = new Vector3(0f, UnityEngine.Random.Range(2f, 3.5f) * (float)Math.Pow(-1, UnityEngine.Random.Range(0,2)), 0f);
+        // shadow = transform.GetChild(0);
     }
 
     private new void FixedUpdate()
@@ -49,6 +54,10 @@ public class FallingBlock : Falling
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (transform.childCount > 1)
+        {
+            GameObject.Destroy(transform.GetChild(1).gameObject);
+        }
         // Debug.Log(collision.collider.bounds.max)
         if (collision.rigidbody.position.y >= rb.position.y - 0.4f
             || Math.Abs(rb.position.x - collision.rigidbody.position.x) > 2 * collision.collider.bounds.extents.x / 1.5
@@ -60,6 +69,8 @@ public class FallingBlock : Falling
         // rb.angularVelocity = Vector3.zero;
         if (!parentRB)
         {
+            // targetAngle.SetLookRotation(rb.transform.forward, Vector3.up)
+            targetAngle.SetLookRotation(new Vector3(rb.transform.forward.x, 0f, rb.transform.forward.z), Vector3.up);
             parentRB = collision.rigidbody;
             parentRB.detectCollisions = false;
             rb.useGravity = false;

@@ -1,16 +1,9 @@
 using System;
-using System.Drawing;
-using Cinemachine.Utility;
-using NUnit.Framework.Constraints;
-using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.Animations;
-using UnityEngine.EventSystems;
-using UnityEngine.SocialPlatforms.Impl;
 
 public class FallingBlock : Falling
 {
-    public float angleSpringFactor = 4f;
+    public float AngleSpringFactor = 4f;
     // public float maxVelocity = 5000f;
     // public float dampFactor = 0.9999f;
     // private Collider collider;
@@ -39,6 +32,12 @@ public class FallingBlock : Falling
         }
     }
 
+    override protected void OnOutOfBounds()
+    {
+        GameManager.GameOver();
+        base.OnOutOfBounds();
+    }
+
     private void FollowParent()
     {
         parentDirection = (parentRB.position - rb.position + new Vector3(0f, parentRB.transform.localScale.y, 0f));
@@ -49,11 +48,12 @@ public class FallingBlock : Falling
 
     private void RightAngle()
     {
-        rb.rotation = Quaternion.RotateTowards(rb.rotation, targetAngle, angleSpringFactor);
+        rb.rotation = Quaternion.RotateTowards(rb.rotation, targetAngle, AngleSpringFactor);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
+        audioManager.PlaySFX(audioManager.boxHit);
         if (transform.childCount > 1)
         {
             GameObject.Destroy(transform.GetChild(1).gameObject);
@@ -93,6 +93,6 @@ public class FallingBlock : Falling
         // Debug.Log($"Block: {rb.position}, Collided: {collidedPosition}, " +
             // $"Dot Product: {Vector3.Distance(rb.position, collidedPosition)}, Scale: {transform.localScale}, " +
             // $"Score: {GameManager.Instance.Level * (1 + (int)(transform.localScale.x / Vector3.Distance(rb.position, collidedPosition)))}");
-        GameManager.Instance.Score += GameManager.Instance.Level * (1 + (int)(transform.localScale.x / Vector3.Distance(rb.position, collidedPosition) ));
+        GameManager.Instance.score += GameManager.Instance.level * (1 + (int)(transform.localScale.x / Vector3.Distance(rb.position, collidedPosition) ));
     }
 }

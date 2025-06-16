@@ -1,0 +1,11 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Resources/Style/ui.uss?fileID=7433441132597879392&amp;guid=f78a75e29ca39421db5fcb1702185714&amp;type=3#ui" />
+    <ui:GroupBox name="Menu" style="flex-grow: 1; background-color: rgba(255, 146, 140, 0); flex-direction: row; padding-left: 10%; padding-right: 10%; flex-wrap: wrap; flex-shrink: 0;">
+        <ui:VisualElement style="flex-grow: 1; position: absolute; width: 976px; height: 921px; top: 100px; right: -94px; background-image: resource(&apos;Chef/chef-head&apos;); rotate: 10deg;" />
+        <ui:GroupBox name="Interactable" style="font-size: 100px; align-self: center; align-content: center; flex-grow: 0; justify-content: center; right: 78px;">
+            <ui:Label text="PIE IN THE SKY" name="Title" style="-unity-text-align: upper-center; margin-bottom: 57px; font-size: 150px; -unity-font-style: bold; color: rgb(255, 255, 255); background-color: rgb(190, 72, 55); background-size: 150% 150%; border-top-width: 10px; border-right-width: 10px; border-bottom-width: 10px; border-left-width: 10px; border-top-left-radius: 25px; border-top-right-radius: 25px; border-bottom-right-radius: 25px; border-bottom-left-radius: 25px; border-left-color: rgb(190, 72, 55); border-right-color: rgb(190, 72, 55); border-top-color: rgb(190, 72, 55); border-bottom-color: rgb(190, 72, 55);" />
+            <ui:Button text="Start" name="Start" style="margin-bottom: 34px; border-top-width: 10px; border-right-width: 10px; border-bottom-width: 10px; border-left-width: 10px;" />
+            <ui:Button text="Options" name="Options" style="border-top-width: 10px; border-right-width: 10px; border-bottom-width: 10px; border-left-width: 10px;" />
+        </ui:GroupBox>
+    </ui:GroupBox>
+</ui:UXML>

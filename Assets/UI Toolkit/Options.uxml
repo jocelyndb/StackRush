@@ -1,0 +1,15 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Resources/Style/ui.uss?fileID=7433441132597879392&amp;guid=f78a75e29ca39421db5fcb1702185714&amp;type=3#ui" />
+    <ui:GroupBox name="Menu" style="flex-grow: 1; background-color: rgb(190, 72, 55); flex-direction: row; padding-left: 10%; padding-right: 10%; flex-wrap: wrap; flex-shrink: 0;">
+        <ui:VisualElement name="VisualElement" style="flex-grow: 1; position: absolute; width: 976px; height: 921px; top: 100px; right: -94px; background-image: resource(&apos;Chef/chef-head&apos;); rotate: 10deg;" />
+        <ui:GroupBox name="Interactable" style="font-size: 100px; align-self: center; align-content: center; flex-grow: 1; justify-content: center; right: 78px; max-width: 1100px;">
+            <ui:GroupBox name="Sliders">
+                <ui:Slider label="Volumeㅤ" value="42" high-value="1" name="VolSlider" enabled="true" focusable="false" low-value="1E-05" fill="false" style="color: rgb(255, 255, 255);" />
+                <ui:Slider label="Musicㅤㅤ" value="42" high-value="1" name="MusicSlider" focusable="false" low-value="1E-05" style="color: rgb(255, 255, 255);" />
+                <ui:Slider label="SFXㅤㅤㅤ" value="42" name="FXSlider" fill="false" focusable="false" high-value="1" low-value="1E-05" style="color: rgb(255, 255, 255);" />
+            </ui:GroupBox>
+            <ui:Label text="You&apos;ve been a pizza rat,&#10;and you were last a pizza rat" name="Scores" enabled="true" style="-unity-text-align: upper-left; margin-bottom: 48px; font-size: 77px; -unity-font-style: bold; white-space: normal; color: rgb(255, 255, 255); display: flex;" />
+            <ui:Button text="Menu" name="MenuButton" style="border-top-width: 10px; border-right-width: 10px; border-bottom-width: 10px; border-left-width: 10px;" />
+        </ui:GroupBox>
+    </ui:GroupBox>
+</ui:UXML>

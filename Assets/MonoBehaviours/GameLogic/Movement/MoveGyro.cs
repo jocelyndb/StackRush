@@ -1,10 +1,6 @@
 using System;
-using System.Threading.Tasks;
-using NUnit.Framework;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.PlayerLoop;
 
 public class MoveGyro : MonoBehaviour
 {
@@ -18,8 +14,8 @@ public class MoveGyro : MonoBehaviour
     private Quaternion targetAngle;
     private bool useKeyboard;
 
-    public float angleSpringFactor = 15f;
-    public Vector2 boundary = new Vector2(5f, 5f);
+    public float AngleSpringFactor = 15f;
+    public Vector2 Boundary = new Vector2(5f, 5f);
 
     private void Awake()
     {
@@ -75,12 +71,12 @@ public class MoveGyro : MonoBehaviour
         rb.AddForce(new Vector3(moveDirection.x * GameManager.Instance.moveSpeed, 0f, moveDirection.y * GameManager.Instance.moveSpeed), ForceMode.Acceleration);
         // transform.position += new Vector3(moveDirection.x, 0, moveDirection.y);
 
-        if (Math.Abs(rb.transform.position.x) >= boundary.x || Math.Abs(rb.transform.position.z) >= boundary.y)
+        if (Math.Abs(rb.transform.position.x) >= Boundary.x || Math.Abs(rb.transform.position.z) >= Boundary.y)
         {
             rb.linearVelocity *= -1.5f;
         }
         targetAngle.SetLookRotation(new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z), Vector3.up);
-        rb.rotation = Quaternion.RotateTowards(rb.rotation, targetAngle, angleSpringFactor);
+        rb.rotation = Quaternion.RotateTowards(rb.rotation, targetAngle, AngleSpringFactor);
         // rb.rotation.SetLookRotation(rb.linearVelocity.normalized, Vector3.up);
     }
 

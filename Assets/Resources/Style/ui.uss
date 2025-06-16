@@ -43,7 +43,8 @@
 }
 
 .unity-slider {
-    text-shadow: 2px 1px 0 rgb(255, 255, 255);
+    text-shadow: 0 1px 0 rgb(255, 255, 255);
+    color: rgb(255, 255, 255);
 }
 
 #unity-drag-container {
@@ -93,7 +94,6 @@
     padding-top: 2px;
     padding-left: 2px;
     padding-right: 2px;
-    align-self: flex-end;
 }
 
 #unity-dragger-border {

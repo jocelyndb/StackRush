@@ -5,10 +5,12 @@ public class Falling : MonoBehaviour
     // public float dampFactor = 0.9999f;
     protected Rigidbody rb;
     // private Collider collider;
+    protected AudioManager audioManager;
 
     protected void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
         // collider = GetComponent<Collider>();
     }
 
@@ -20,7 +22,7 @@ public class Falling : MonoBehaviour
         }
     }
 
-    protected void OnOutOfBounds()
+    virtual protected void OnOutOfBounds()
     {
         Destroy(gameObject);
     }

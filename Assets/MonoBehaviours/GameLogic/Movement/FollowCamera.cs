@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class FollowCamera : MonoBehaviour
 {
-    public float cameraLerpFactor = 10f;
+    public float CameraLerpFactor = 10f;
     private Camera cam;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -22,7 +22,7 @@ public class FollowCamera : MonoBehaviour
         Vector3 stackTopCameraPosition = new Vector3(GameManager.Instance.StackTopRB.position.x, GameManager.Instance.StackTopRB.position.y + 10f, GameManager.Instance.StackTopRB.position.z - 20f);
         if (stackTopCameraPosition != transform.position)
         {
-            transform.position = Vector3.Lerp(transform.position, stackTopCameraPosition, Time.deltaTime * cameraLerpFactor);
+            transform.position = Vector3.Lerp(transform.position, stackTopCameraPosition, Time.deltaTime * CameraLerpFactor);
         }
         cam.fieldOfView = 60 + transform.position.y;
     }

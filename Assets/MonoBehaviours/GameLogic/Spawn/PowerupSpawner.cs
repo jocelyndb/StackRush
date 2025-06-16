@@ -6,25 +6,25 @@ public class PowerupSpawner : MonoBehaviour
 {
     // public GameObject Prefab;
     public List<GameObject> Prefabs;
-    public float xBound = 5;
-    public float zBound = 5;
-    public float yInitial = 20f;
-    public float yIncrease = 1f;
-    public float minWaitTime = 2f;
-    public float maxWaitTime = 20f;
+    public float XBound = 5;
+    public float ZBound = 5;
+    public float YInitial = 20f;
+    public float YIncrease = 1f;
+    public float MinWaitTime = 2f;
+    public float MaxWaitTime = 20f;
 
     void Start()
     {
-
         StartCoroutine(SpawnPowerup());
     }
 
     private IEnumerator SpawnPowerup()
     {
-        yield return new WaitForSeconds(Random.Range(minWaitTime, maxWaitTime));
+        yield return new WaitForSeconds(Random.Range(MinWaitTime, MaxWaitTime));
+
         Instantiate(Prefabs[Random.Range(0, Prefabs.Count)], transform.position, Quaternion.identity);
-        transform.position = new Vector3(Random.Range(-xBound, xBound), yInitial + yIncrease * GameManager.Instance.LevelCount, Random.Range(-xBound, xBound));
-        // yield return new WaitForSeconds(0.5f);
+        transform.position = new Vector3(Random.Range(-XBound, XBound), YInitial + YIncrease * GameManager.Instance.LevelCount, Random.Range(-XBound, XBound));
+
         StartCoroutine(SpawnPowerup());
     }
 }

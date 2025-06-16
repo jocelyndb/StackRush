@@ -13,6 +13,6 @@ public class ScoreText : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        text.text = $"Score: {GameManager.Instance.Score}\nLevel: {GameManager.Instance.Level}\n{GameManager.Instance.LevelCount - 1}/{GameManager.Instance.BlocksPerLevel}";    
+        text.text = $"Score: {GameManager.Instance.score}\nLevel: {GameManager.Instance.level}\n{GameManager.Instance.LevelCount - 1}/{GameManager.Instance.BlocksPerLevel}";    
     }
 }

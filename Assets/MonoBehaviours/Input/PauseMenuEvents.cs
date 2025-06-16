@@ -1,8 +1,6 @@
-using System;
-using Unity.Mathematics;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Audio;
-using UnityEngine.InputSystem.LowLevel;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 public class PauseMenuEvents : MonoBehaviour
@@ -10,10 +8,8 @@ public class PauseMenuEvents : MonoBehaviour
     private UIDocument document;
     private Button resumeButton;
     private Button menuButton;
-    private Slider volSlider;
-    private Slider musicSlider;
-    private Slider fxSlider;
-    private AudioMixer mixer;
+    private List<Button> menuButtons;
+    private AudioManager audioManager;
 
     private void OnEnable()
     {
@@ -22,26 +18,31 @@ public class PauseMenuEvents : MonoBehaviour
         resumeButton = document.rootVisualElement.Q("Resume") as Button;
         resumeButton.RegisterCallback<ClickEvent>(OnResumeClick);
 
-        mixer = GameObject.FindFirstObjectByType<AudioMixer>();
-        Debug.Log( mixer);
-        Debug.Log(document);
-
         menuButton = document.rootVisualElement.Q("Menu") as Button;
         menuButton.RegisterCallback<ClickEvent>(OnMenuClick);
 
-        // TODO: deal with volume setting!
-        volSlider = document.rootVisualElement.Q("VolSlider") as Slider;
-        musicSlider = document.rootVisualElement.Q("MusicSlider") as Slider;
-        fxSlider = document.rootVisualElement.Q("FXSlider") as Slider;
-        Debug.Log("Registered buttons");
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
 
+        menuButtons = document.rootVisualElement.Query<Button>().ToList();
 
+        foreach (Button button in menuButtons)
+        {
+            button.RegisterCallback<ClickEvent>(delegate { audioManager.PlaySFX(audioManager.click); });
+            button.RegisterCallback<MouseEnterEvent>(delegate { Debug.Log("Working here"); audioManager.PlaySFX(audioManager.hover); });
+        }
     }
 
     private void OnDisable()
     {
         resumeButton.UnregisterCallback<ClickEvent>(OnResumeClick);
         resumeButton.UnregisterCallback<ClickEvent>(OnMenuClick);
+
+        foreach (Button button in menuButtons)
+        {
+            button.UnregisterCallback<ClickEvent>(delegate { audioManager.PlaySFX(audioManager.click); });
+            button.UnregisterCallback<MouseEnterEvent>(delegate { Debug.Log("Working here");  audioManager.PlaySFX(audioManager.hover); });
+        }
+
         Debug.Log("Deregistered buttons");
     }
 
@@ -51,18 +52,14 @@ public class PauseMenuEvents : MonoBehaviour
 
     private void OnResumeClick(ClickEvent e)
     {
-        // Time.timeScale = 1;
-        GameManager.TogglePause();
         Debug.Log("Resume pressed");
+        GameManager.TogglePause();
         gameObject.SetActive(false);
     }
 
     private void OnMenuClick(ClickEvent e)
     {
-        // TODO: make set menu scene
-        // Time.timeScale = 1;
-        GameManager.TogglePause();
-        Debug.Log("Menu pressed");
-        gameObject.SetActive(false);
+        GameManager.TogglePause(true);
+        SceneManager.LoadScene("MainMenuScene");
     }
 }
